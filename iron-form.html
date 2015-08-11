@@ -76,7 +76,25 @@ call the form's `submit` method.
       withCredentials: {
         type: Boolean,
         value: false
-      }
+      },
+
+      /**
+       * HTTP request headers to send.
+       * heades Object will pass to iron-ajax.
+       *
+       * Example:
+       *
+       *     <iron-form headers='{"X-Requested-With": "XMLHttpRequest"}'></iron-form>
+       *
+       * Note: setting a `Content-Type` header here will override the value
+       * specified by the `contentType` property of this element.
+       */
+      headers: {
+        type: Object,
+        value: function() {
+          return {};
+        }
+      },
     },
     /**
      * Fired if the form cannot be submitted because it's invalid.
@@ -131,6 +149,10 @@ call the form's `submit` method.
         return;
       }
 
+      if (this.headers instanceof Object) {
+        this._requestBot.headers = this.headers;
+      }
+
       var json = this.serialize();
 
       this._requestBot.url = this.action;
@@ -164,7 +186,7 @@ call the form's `submit` method.
      * custom components and native elements of the form. If there are elements
      * with duplicate names, then their values will get aggregated into an
      * array of values.
-     * 
+     *
      * @return {!Object}
      */
     serialize: function() {
